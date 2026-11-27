@@ -48,7 +48,7 @@ jobs:
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install "platform-tools" "platforms;android-35" "build-tools;35.0.0"
 
       - name: Compile Kotlin source before signing
-        run: gradle :app:compileDebugKotlin
+        run: gradle :app:compileReleaseKotlin
 
       - name: Restore and verify stable signing key
         env:
@@ -72,13 +72,13 @@ jobs:
           fi
           echo "Stable signing certificate verified: $ACTUAL_SHA1"
 
-      - name: Build debug APK
-        run: gradle :app:assembleDebug
+      - name: Build optimized release APK
+        run: gradle :app:assembleRelease
 
       - name: Verify APK package, Android minimum and signature
         run: |
           set -euo pipefail
-          APK="app/build/outputs/apk/debug/app-debug.apk"
+          APK="app/build/outputs/apk/release/app-release.apk"
           test -s "$APK"
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --print-certs "$APK" | tee /tmp/scanner-certificate.txt
@@ -86,16 +86,16 @@ jobs:
           EXPECTED_SHA1="85EFC050123C89D9DA54763C70E6359DE107EAB2"
           test "$ACTUAL_SHA1" = "$EXPECTED_SHA1"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" > /tmp/scanner-badging.txt
-          grep -F "package: name='com.mobin.scanner' versionCode='1' versionName='1.0.0'" /tmp/scanner-badging.txt
+          grep -F "package: name='com.mobin.scanner' versionCode='2' versionName='1.0.1'" /tmp/scanner-badging.txt
           grep -F "sdkVersion:'29'" /tmp/scanner-badging.txt
           grep -E "^application: .*icon='res/" /tmp/scanner-badging.txt
           echo "Scanner APK package, minSdk, launcher icon and signature verified."
 
-      - name: Upload debug APK
+      - name: Upload optimized release APK
         uses: actions/upload-artifact@v4
         with:
           name: Scanner-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
           retention-days: 30
 
@@ -129,7 +129,7 @@ jobs:
             gh release delete "$tag" --repo "$REPOSITORY" --cleanup-tag --yes || true
           done < <(gh release list --repo "$REPOSITORY" --limit 100 --json tagName --jq '.[].tagName')
 
-          gh release create latest release-assets/app-debug.apk \
+          gh release create latest release-assets/app-release.apk \
             --repo "$REPOSITORY" \
             --title "Scanner $VERSION_NAME (Latest)" \
             --notes "Latest automatic build of Scanner.\n\nApp version: $VERSION_NAME\nPackage: com.mobin.scanner\nMinimum Android: 10 (API 29)\nCommit: $GITHUB_SHA"
