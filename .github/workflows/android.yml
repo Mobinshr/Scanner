@@ -86,7 +86,7 @@ jobs:
           EXPECTED_SHA1="85EFC050123C89D9DA54763C70E6359DE107EAB2"
           test "$ACTUAL_SHA1" = "$EXPECTED_SHA1"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" > /tmp/scanner-badging.txt
-          grep -F "package: name='com.mobin.scanner' versionCode='2' versionName='1.0.1'" /tmp/scanner-badging.txt
+          grep -F "package: name='com.mobin.scanner' versionCode='3' versionName='1.0.2'" /tmp/scanner-badging.txt
           grep -F "sdkVersion:'29'" /tmp/scanner-badging.txt
           grep -E "^application: .*icon='res/" /tmp/scanner-badging.txt
           echo "Scanner APK package, minSdk, launcher icon and signature verified."
@@ -132,4 +132,4 @@ jobs:
           gh release create latest release-assets/app-release.apk \
             --repo "$REPOSITORY" \
             --title "Scanner $VERSION_NAME (Latest)" \
-            --notes "Latest automatic build of Scanner.\n\nApp version: $VERSION_NAME\nPackage: com.mobin.scanner\nMinimum Android: 10 (API 29)\nCommit: $GITHUB_SHA"
+            --notes "Latest automatic build of Scanner.\n\nApp version: $VERSION_NAME\nVersion code: 3\nPackage: com.mobin.scanner\nMinimum Android: 10 (API 29)\nCommit: $GITHUB_SHA"

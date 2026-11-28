@@ -305,6 +305,7 @@ private fun ScannerHome(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
+            AppUpdateControl()
             IconButton(onClick = onHistoryClick) {
                 Icon(Icons.Filled.History, contentDescription = "تاریخچه")
             }
