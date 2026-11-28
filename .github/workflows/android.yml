@@ -134,8 +134,8 @@ jobs:
             gh release delete "$tag" --repo "$REPOSITORY" --cleanup-tag --yes || true
           done < <(gh release list --repo "$REPOSITORY" --limit 100 --json tagName --jq '.[].tagName')
 
+          NOTES=$(printf 'Latest automatic build of Scanner.\n\nApp version: %s\nVersion code: %s\nPackage: com.mobin.scanner\nMinimum Android: 10 (API 29)\nCommit: %s' "$VERSION_NAME" "$VERSION_CODE" "$GITHUB_SHA")
           gh release create latest release-assets/app-release.apk \
             --repo "$REPOSITORY" \
             --title "Scanner $VERSION_NAME (Latest)" \
-          NOTES=$(printf 'Latest automatic build of Scanner.\n\nApp version: %s\nVersion code: %s\nPackage: com.mobin.scanner\nMinimum Android: 10 (API 29)\nCommit: %s' "$VERSION_NAME" "$VERSION_CODE" "$GITHUB_SHA")
             --notes "$NOTES"
