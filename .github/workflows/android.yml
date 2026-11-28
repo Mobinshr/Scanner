@@ -86,7 +86,7 @@ jobs:
           EXPECTED_SHA1="85EFC050123C89D9DA54763C70E6359DE107EAB2"
           test "$ACTUAL_SHA1" = "$EXPECTED_SHA1"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" > /tmp/scanner-badging.txt
-          grep -F "package: name='com.mobin.scanner' versionCode='3' versionName='1.0.2'" /tmp/scanner-badging.txt
+          grep -F "package: name='com.mobin.scanner' versionCode='4' versionName='1.0.3'" /tmp/scanner-badging.txt
           grep -F "sdkVersion:'29'" /tmp/scanner-badging.txt
           grep -E "^application: .*icon='res/" /tmp/scanner-badging.txt
           echo "Scanner APK package, minSdk, launcher icon and signature verified."
@@ -134,7 +134,7 @@ jobs:
             gh release delete "$tag" --repo "$REPOSITORY" --cleanup-tag --yes || true
           done < <(gh release list --repo "$REPOSITORY" --limit 100 --json tagName --jq '.[].tagName')
 
-          NOTES=$(printf 'Latest automatic build of Scanner.\n\nApp version: %s\nVersion code: %s\nPackage: com.mobin.scanner\nMinimum Android: 10 (API 29)\nCommit: %s' "$VERSION_NAME" "$VERSION_CODE" "$GITHUB_SHA")
+          NOTES=$(printf 'Latest automatic build of Scanner.\n\nRelease purpose: verify in-app update delivery.\nApp version: %s\nVersion code: %s\nPackage: com.mobin.scanner\nMinimum Android: 10 (API 29)\nCommit: %s' "$VERSION_NAME" "$VERSION_CODE" "$GITHUB_SHA")
           gh release create latest release-assets/app-release.apk \
             --repo "$REPOSITORY" \
             --title "Scanner $VERSION_NAME (Latest)" \
